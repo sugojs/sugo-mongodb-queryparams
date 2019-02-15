@@ -176,7 +176,7 @@ describe('MongoDBQueryParams', () => {
   describe(`integration`, () => {
     it('should create a complex query', async () => {
       const query = MongoDbQueryParams.parseQueryParams({
-        filter: 'name AND email:hola AND number:==4',
+        filter: 'name AND email:eq:hola AND number:eq:4',
         sort: 'name:asc email:desc',
         limit: 10,
         skip: 50,
