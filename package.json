@@ -5,11 +5,19 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register src/test/*.test.ts",
     "compile-filter-parser": "nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
     "compile-sort-parser": "nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
     "compile-select-parser": "nearleyc src/parsers/select/grammar.ne -o src/parsers/select/grammar.ts",
-    "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser && npm run compile-select-parser"
+    "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser && npm run compile-select-parser",
+    "build": "tsc",
+    "test": "mocha -r ts-node/register src/test/*.test.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
