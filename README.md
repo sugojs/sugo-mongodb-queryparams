@@ -8,11 +8,7 @@ Querystring parser that follows a simple ruleset to form querystrings and them b
 npm install --save @sugo/mongodb-queryparams
 ```
 
-# **QueryParams**
-
-Abstract class meant to be used as a super class for specific queryparam implementations
-
-## **Options**
+## **Query parameters**
 
 - **skip:** Number. Used for pagination. Defines how many documents of the result query must be skipped before returing the objects.
 - **limit:** Number. Used for pagination. Defines how many documents can fit in the result set.
@@ -32,58 +28,25 @@ Abstract class meant to be used as a super class for specific queryparam impleme
 
 The sintax is very similar to elastic search. There are 3 types of filters:
 
-- Text Search: `<field> <field>`
-- Equality Search: `<field>:value`
-- Operator Search: `<field>:<operator><value>` (SUPPORTED OPERATORS: >, >=, <, <=, ==, !=)
+- Operator Search: `<field>:<operator><value>`
+
+### **Supported Operators**
+
+- gte
+- gt
+- lte
+- lt
+- eq
+- neq
 
 **Examples:**
 
-- "foo fighter bar"
-- "foo:fighter"
-- "foo:>=fighter"
-
-## **Methods**
-
-- **get filterRegExp():** Obtains the Regular Expression used to parse the filter parameter.
-
-- **get sortRegExp():** Obtains the Regular Expression used to parse the sort parameter.
-
-- **get defaultOperatorRegExp():** Obtains the Regular Expression used to parse the defaultOperator parameter.
-
-- **getSkip():** Obtains and parses the skip parameter into the appropiate query format.
-
-- **getLimit():** Obtains and parses the limit parameter into the appropiate query format.
-
-- **getFields():** Obtains and parses the fields parameter into the appropiate query format.
-
-- **getDefaultOperator():** Obtains and parses the defaultOperator parameter into the appropiate query format.
-
-## **MongoDbQueryParams**
-
-Implementation of the CRAF queryparams processing for the MongoDB driver.
-
-As this class is aimed for the MongoDB driver it is recommended to read the Api's documentation.
-
-http://mongodb.github.io/node-mongodb-native/3.1/api/index.html
-
-## **Methods**
-
-- **mapToMongoOperator():** Returns the corresponding mongodb operator based on the querystring operator
-
-- **mapToMongoSort():** Returns the corresponding mongodb sort direction value based on the querystring.
-
-- **getQuery():** Obtains the filter to be passed to the mongodb query.
-
-- **getProjection():** Alias for getFields().
-
-- **getQueryOptions():** Returns the fully formed query options to be passed to mongoDB
+- "foo:eq:fighter"
+- "foo:gte:fighter"
 
 ## **Example**
 
-```javascript
-const queryParams = new MongoDBQueryParams(req.query),
-  query = queryParams.getQuery(),
-  queryOptions = queryParams.getQueryOptions(),
-  mongodb = new MongoLeroyDriver(servers, database, options),
-  objects = await mongodb.find(collectionName, query, queryOptions);
+```typescript
+import MongoDbQueryParams from 'mongodb-queryparams';
+const queryParams = MongoDbQueryParams.parseQueryParams(req.query);
 ```
