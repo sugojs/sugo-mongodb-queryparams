@@ -69,11 +69,11 @@ describe('MongoDBQueryParams', () => {
       const { select } = MongoDbQueryParams.parseQueryParams({
         select: '-foo fighters -is an -awesome band',
       });
-      select.foo.should.be.eql(-1);
+      select.foo.should.be.eql(0);
       select.fighters.should.be.eql(1);
-      select.is.should.be.eql(-1);
+      select.is.should.be.eql(0);
       select.an.should.be.eql(1);
-      select.awesome.should.be.eql(-1);
+      select.awesome.should.be.eql(0);
       select.band.should.be.eql(1);
     });
   });
