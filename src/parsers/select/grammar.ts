@@ -50,7 +50,7 @@ export const ParserRules: ParserRule[] = [
       return result;
     },
   },
-  { name: 'SELECT', symbols: ['MINUS', 'KEY'], postprocess: ([exclude, key]) => ({ [key]: -1 }) },
+  { name: 'SELECT', symbols: ['MINUS', 'KEY'], postprocess: ([exclude, key]) => ({ [key]: 0 }) },
   { name: 'SELECT', symbols: ['KEY'], postprocess: ([key]) => ({ [key]: 1 }) },
   { name: 'KEY$ebnf$1', symbols: [/[0-9a-zA-Z_$.]/] },
   {

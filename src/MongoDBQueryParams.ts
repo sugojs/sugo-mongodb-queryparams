@@ -3,7 +3,7 @@ import InvalidQueryParamException from './exceptions/InvalidQueryParamException'
 import * as parsers from './parsers';
 
 export interface ISelect {
-  [key: string]: -1 | 1;
+  [key: string]: 0 | 1;
 }
 
 export interface ISort {

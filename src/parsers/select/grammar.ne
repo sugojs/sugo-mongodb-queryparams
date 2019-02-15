@@ -18,7 +18,7 @@ RESULT -> MINUS:* KEY (_ MINUS:* KEY):* {% (d) => {
 	return result
 }  %}
 
-SELECT -> MINUS KEY {% ([exclude,key] ) => ({[key]: -1 }) %}
+SELECT -> MINUS KEY {% ([exclude,key] ) => ({[key]: 0 }) %}
 	| KEY {% ([key] ) => ({[key]: 1 }) %}
 
 KEY -> [0-9a-zA-Z_$.]:+ {% function(d) {return d[0].join("")} %}
