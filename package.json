@@ -4,9 +4,10 @@
   "description": "Unique Queryparams sintax (Inspired in Elastic Search) that creates queries Elastic Search and MongoDB",
   "scripts": {
     "test": "set NODE_ENV=test&& mocha",
-    "compile-filter-parser": "nearleyc parsers/filter/grammar.ne -o parsers/filter/grammar.js",
-    "compile-sort-parser": "nearleyc parsers/sort/grammar.ne -o parsers/sort/grammar.js",
-    "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser"
+    "compile-filter-parser": "nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
+    "compile-sort-parser": "nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
+    "compile-select-parser": "nearleyc src/parsers/select/grammar.ne -o src/parsers/select/grammar.ts",
+    "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser && npm run compile-select-parser"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,17 @@
     "@types/nearley": "^2.11.0",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "@types/chai": "^4.1.7",
+    "@types/cors": "^2.8.4",
+    "@types/mocha": "^5.2.5",
+    "@types/supertest": "^2.0.7",
+    "prettier": "^1.16.3",
+    "supertest": "^3.4.2",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.3.1"
   },
   "keywords": [
     "queryparam",
