@@ -105,7 +105,7 @@ describe('MongoDBQueryParams', () => {
       filter.foo.$eq.should.be.eql('awesome');
     });
 
-    it('should create a $eq search with the ":eq:" and a value', async function() {
+    it('should create a $eq search with the ":eq:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:eq:4',
       });
@@ -115,7 +115,7 @@ describe('MongoDBQueryParams', () => {
       filter.number.$eq.should.be.eql(4);
     });
 
-    it('should create a $ne search with the ":neq:" and a value', async function() {
+    it('should create a $ne search with the ":neq:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:neq:4',
       });
@@ -125,7 +125,7 @@ describe('MongoDBQueryParams', () => {
       filter.number.$ne.should.be.eql(4);
     });
 
-    it('should create a $gt search with the ":gt:" and a value', async function() {
+    it('should create a $gt search with the ":gt:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:gt:4',
       });
@@ -134,7 +134,7 @@ describe('MongoDBQueryParams', () => {
       filter.number.$gt.should.be.eql(4);
     });
 
-    it('should create a $gte search with the ":gte:" and a value', async function() {
+    it('should create a $gte search with the ":gte:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:gte:4',
       });
@@ -143,7 +143,7 @@ describe('MongoDBQueryParams', () => {
       filter.number.$gte.should.be.eql(4);
     });
 
-    it('should create a $lt search with the ":lt:" and a value', async function() {
+    it('should create a $lt search with the ":lt:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:lt:4',
       });
@@ -153,7 +153,7 @@ describe('MongoDBQueryParams', () => {
       filter.number.$lt.should.be.eql(4);
     });
 
-    it('should create a $lte search with the ":lte:" and a value', async function() {
+    it('should create a $lte search with the ":lte:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:lte:4',
       });
@@ -163,14 +163,13 @@ describe('MongoDBQueryParams', () => {
       filter.number.$lte.should.be.eql(4);
     });
 
-    it('should chain $and and $or tags, parsing parenthesis', async function() {
+    it('should chain $and and $or tags, parsing parenthesis', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:lte:4 AND number:gte:1 OR (boolean:eq:false)',
       });
       filter.should.have.property('$or');
       filter.$or.should.be.an('array');
       filter.$or.length.should.be.eql(2);
-      console.log(filter);
     });
   });
 });

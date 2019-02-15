@@ -38,7 +38,7 @@ export const ParserRules = [
     symbols: ['KEY', 'SEPARATOR', 'OPERATOR', 'SEPARATOR', 'VALUE'],
     postprocess(d) {
       const [key, separator1, operator, separator2, value] = d;
-      if (operator != ':') {
+      if (operator !== ':') {
         return { [key]: { [operator]: value } };
       } else if (typeof value !== 'string') {
         return { [key]: value };

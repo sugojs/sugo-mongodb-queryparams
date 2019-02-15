@@ -37,7 +37,7 @@ export default class MongoDbQueryParams {
 
   public static parseSkip(rawSkip: string | number): number {
     try {
-      return typeof rawSkip === 'number' ? rawSkip : parseInt(rawSkip);
+      return typeof rawSkip === 'number' ? rawSkip : parseInt(rawSkip, 10);
     } catch (error) {
       throw new InvalidQueryParamException('skip', rawSkip);
     }
@@ -45,7 +45,7 @@ export default class MongoDbQueryParams {
 
   public static parseLimit(rawLimit: string | number): number {
     try {
-      return typeof rawLimit === 'number' ? rawLimit : parseInt(rawLimit);
+      return typeof rawLimit === 'number' ? rawLimit : parseInt(rawLimit, 10);
     } catch (error) {
       throw new InvalidQueryParamException('limit', rawLimit);
     }

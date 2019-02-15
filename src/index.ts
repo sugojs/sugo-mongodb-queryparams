@@ -1,2 +1,2 @@
-export * from './MongoDBQueryParams'
-export * from './exceptions/InvalidQueryParamException'
+export * from './MongoDBQueryParams';
+export * from './exceptions/InvalidQueryParamException';

@@ -33,8 +33,8 @@ export const ParserRules: ParserRule[] = [
     name: 'RESULT',
     symbols: ['RESULT$ebnf$1', 'KEY', 'RESULT$ebnf$2'],
     postprocess: (d: any) => {
-      function flat(array, depth = 1) {
-        return array.reduce(function(flatArray, toFlatten) {
+      function flat(input: any[], depth = 1) {
+        return input.reduce((flatArray, toFlatten) => {
           return flatArray.concat(Array.isArray(toFlatten) && depth - 1 ? flat(toFlatten, depth - 1) : toFlatten);
         }, []);
       }
