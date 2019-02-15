@@ -31,6 +31,10 @@ interface IQueryParams {
 }
 
 export default class MongoDbQueryParams {
+  static get defaultLimit() {
+    return 99999;
+  }
+
   public static parseSkip(rawSkip: string | number): number {
     try {
       return typeof rawSkip === 'number' ? rawSkip : parseInt(rawSkip);
@@ -84,10 +88,10 @@ export default class MongoDbQueryParams {
     }
   }
 
-  public static getQueryParams(raw: IRawQuery): IQueryParams {
+  public static parseQueryParams(raw: IRawQuery): IQueryParams {
     return {
       skip: raw.skip ? this.parseSkip(raw.skip) : 0,
-      limit: raw.limit ? this.parseLimit(raw.limit) : 999999,
+      limit: raw.limit ? this.parseLimit(raw.limit) : this.defaultLimit,
       sort: raw.sort ? this.parseSort(raw.sort) : {},
       select: raw.select ? this.parseSelect(raw.select) : {},
       filter: raw.filter ? this.parseFilter(raw.filter) : {},

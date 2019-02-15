@@ -1,9 +1,11 @@
 {
   "name": "unified-queryparams",
   "version": "0.7.2",
-  "description": "Unique Queryparams sintax (Inspired in Elastic Search) that creates queries Elastic Search and MongoDB",
+  "description": "Unique Queryparams sintax (Inspired in Elastic Search) that creates queries for MongoDB",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "set NODE_ENV=test&& mocha",
+    "test": "mocha -r ts-node/register src/test/*.test.ts",
     "compile-filter-parser": "nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
     "compile-sort-parser": "nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
     "compile-select-parser": "nearleyc src/parsers/select/grammar.ne -o src/parsers/select/grammar.ts",

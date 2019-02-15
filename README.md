@@ -16,14 +16,13 @@ Abstract class meant to be used as a super class for specific queryparam impleme
 
 - **skip:** Number. Used for pagination. Defines how many documents of the result query must be skipped before returing the objects.
 - **limit:** Number. Used for pagination. Defines how many documents can fit in the result set.
-- **fields:** String. Used for projection. Defines which fields of the objects must be returned. Useful for optimizing queries.
-- **defaultOperator:** String. Elastic Search Exclusive. Defines how consecutive filters should be interpreted. Values: **"AND"**, **"OR"**. **Default:** **"AND"**.
+- **select:** String. Used for projection. Defines which fields of the objects must be returned. Useful for optimizing queries. The "-" symbol is used to exclude a field
 - **sort:** String. Used for sorting.
 - **filter:** String. Used for filtering the query.
 
-## **fields Sintax**
+## **select**
 
-`<field> <field> ...`
+`<field> <field> -<field>...`
 
 ## **sort Sintax**
 
@@ -59,46 +58,7 @@ The sintax is very similar to elastic search. There are 3 types of filters:
 
 - **getDefaultOperator():** Obtains and parses the defaultOperator parameter into the appropiate query format.
 
-# **ElasticSearchUriQueryParams**
-
----
-
-Implementation of the CRAF queryparams processing for Elastic Search
-Uri Api.
-
-As this class is aimed for the Elastic Search Uri Search Api
-it is recommended to read the Api's documentation.
-
-https://www.elastic.co/guide/en/elasticsearch/reference/current/search-uri-request.html
-
-## **Methods**
-
-- **getSize():** Alias for getLimit().
-
-- **getSource():** Alias for getFields().
-
-- **getFrom():** Alias for getSkip().
-
-- **getFilter():** Obtains and parses the filter parameter into the appropiate query format.
-
-- **getQuerystring():** Returns the fully formed and formatted Elastic Search Uri queryparam
-
-## **Example**
-
-```javascript
-const queryParams = new ElasticSearchUriQueryParams(req.query),
-  querystring = queryParams.getQuerystring(),
-  response = await promiseHttp.get({
-    hostname: host,
-    path: `/opal/${type}/_search${querystring}`,
-    port: port
-  }),
-  objects = response.hits.hits.map(hit => {
-    return hit._source;
-  });
-```
-
-## **MongoDBQueryParams**
+## **MongoDbQueryParams**
 
 Implementation of the CRAF queryparams processing for the MongoDB driver.
 

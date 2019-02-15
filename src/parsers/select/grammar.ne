@@ -1,5 +1,12 @@
 RESULT -> MINUS:* KEY (_ MINUS:* KEY):* {% (d) => { 
-	const array = d.flat(100).filter(x=>x) 
+	
+	function flat(array, depth = 1){
+		return array.reduce(function (flatArray, toFlatten) {
+			return flatArray.concat((Array.isArray(toFlatten) && (depth-1)) ? flat(toFlatten, depth-1) : toFlatten);
+		  }, []);
+	}
+	
+	const array = flat(d,100).filter(x=>x) 
 	const result = {}
 	let i = 0
 	while (i<array.length) {

@@ -33,7 +33,12 @@ export const ParserRules: ParserRule[] = [
     name: 'RESULT',
     symbols: ['RESULT$ebnf$1', 'KEY', 'RESULT$ebnf$2'],
     postprocess: (d: any) => {
-      const array = d.flat(100).filter(x => x);
+      function flat(array, depth = 1) {
+        return array.reduce(function(flatArray, toFlatten) {
+          return flatArray.concat(Array.isArray(toFlatten) && depth - 1 ? flat(toFlatten, depth - 1) : toFlatten);
+        }, []);
+      }
+      const array = flat(d, 100).filter(x => x);
       const result: any = {};
       let i = 0;
       while (i < array.length) {
