@@ -172,4 +172,21 @@ describe('MongoDBQueryParams', () => {
       filter.$or.length.should.be.eql(2);
     });
   });
+
+  describe(`integration`, () => {
+    it('should create a complex query', async () => {
+      const query = MongoDbQueryParams.parseQueryParams({
+        filter: 'name AND email:hola AND number:==4',
+        sort: 'name:asc email:desc',
+        limit: 10,
+        skip: 50,
+        select: 'name -email number',
+      });
+      query.should.have.property('filter');
+      query.should.have.property('sort');
+      query.should.have.property('limit');
+      query.should.have.property('skip');
+      query.should.have.property('select');
+    });
+  });
 });

@@ -48,5 +48,11 @@ The sintax is very similar to elastic search. There are 3 types of filters:
 
 ```typescript
 import MongoDbQueryParams from 'mongodb-queryparams';
-const queryParams = MongoDbQueryParams.parseQueryParams(req.query);
+const { filter, sort, limit, select, skip } = MongoDbQueryParams.parseQueryParams({
+  filter: 'name AND email:hola AND number:==4',
+  sort: 'name:asc email:desc',
+  limit: 10,
+  skip: 50,
+  select: 'name -email number',
+});
 ```

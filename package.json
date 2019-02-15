@@ -4,6 +4,9 @@
   "description": "Unique Queryparams sintax (Inspired in Elastic Search) that creates queries for MongoDB",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "compile-filter-parser": "nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
     "compile-sort-parser": "nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
