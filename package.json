@@ -1,0 +1,40 @@
+{
+  "name": "unified-queryparams",
+  "version": "0.7.2",
+  "description": "Unique Queryparams sintax (Inspired in Elastic Search) that creates queries Elastic Search and MongoDB",
+  "scripts": {
+    "test": "set NODE_ENV=test&& mocha",
+    "compile-filter-parser": "nearleyc parsers/filter/grammar.ne -o parsers/filter/grammar.js",
+    "compile-sort-parser": "nearleyc parsers/sort/grammar.ne -o parsers/sort/grammar.js",
+    "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/franciscosucre/unified-queryparams"
+  },
+  "author": {
+    "name": "Francisco Javier Sucre González",
+    "email": "franciscojsucreg@gmail.com"
+  },
+  "dependencies": {
+    "nearley": "^2.15.1"
+  },
+  "devDependencies": {
+    "@types/nearley": "^2.11.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.0",
+    "mocha": "^5.2.0"
+  },
+  "keywords": [
+    "queryparam",
+    "queryparams",
+    "params",
+    "param",
+    "mongodb",
+    "mongo",
+    "elastic",
+    "elasticsearch",
+    "elastic-search",
+    "database"
+  ]
+}
