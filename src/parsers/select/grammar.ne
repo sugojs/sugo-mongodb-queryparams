@@ -11,7 +11,7 @@ RESULT -> MINUS:* KEY (_ MINUS:* KEY):* {% (d) => {
 	let i = 0
 	while (i<array.length) {
 		let field = array[i] === true ? array[i+1] : array[i]
-		let value = array[i] === true ? -1 : 1
+		let value = array[i] === true ? 0 : 1
 		result[field] = value
 		i += array[i] === true ? 2: 1
 	}

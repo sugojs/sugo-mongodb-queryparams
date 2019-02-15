@@ -43,7 +43,7 @@ export const ParserRules: ParserRule[] = [
       let i = 0;
       while (i < array.length) {
         const field = array[i] === true ? array[i + 1] : array[i];
-        const value = array[i] === true ? -1 : 1;
+        const value = array[i] === true ? 0 : 1;
         result[field] = value;
         i += array[i] === true ? 2 : 1;
       }
