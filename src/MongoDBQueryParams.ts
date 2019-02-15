@@ -2,19 +2,19 @@ import * as assert from 'assert';
 import InvalidQueryParamException from './exceptions/InvalidQueryParamException';
 import * as parsers from './parsers';
 
-interface ISelect {
+export interface ISelect {
   [key: string]: -1 | 1;
 }
 
-interface ISort {
+export interface ISort {
   [key: string]: -1 | 1;
 }
 
-interface IFilter {
+export interface IFilter {
   [key: string]: any;
 }
 
-interface IRawQuery {
+export interface IRawQuery {
   limit?: string | number;
   skip?: string | number;
   filter?: string;
@@ -22,7 +22,7 @@ interface IRawQuery {
   sort?: string;
 }
 
-interface IQueryParams {
+export interface IQueryParams {
   limit: number;
   skip: number;
   filter: IFilter;
@@ -30,7 +30,7 @@ interface IQueryParams {
   sort: ISort;
 }
 
-export default class MongoDbQueryParams {
+export class MongoDbQueryParams {
   static get defaultLimit() {
     return 99999;
   }
@@ -101,3 +101,5 @@ export default class MongoDbQueryParams {
     throw new Error('This class is not meant to be initialized, is static');
   }
 }
+
+export default MongoDbQueryParams;
