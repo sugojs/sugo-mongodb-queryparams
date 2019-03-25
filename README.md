@@ -20,15 +20,30 @@ npm install --save @sugo/mongodb-queryparams
 
 `<field> <field> -<field>...`
 
-## **sort Sintax**
+## **sort syntax**
 
 `<field>:<direction> <field>:<direction> <field>:<direction> ...`
 
-## **filter Sintax**
+## **filter syntax**
 
-The sintax is very similar to elastic search. There are 3 types of filters:
+`<field>:<operator><value>`
 
-- Operator Search: `<field>:<operator><value>`
+## **Value parsing**
+
+The Values are parsed to their correspoding types.
+
+- foo:eq:4 -----> { foo: { \$eq: 4 } }
+- foo:eq:3.4 -----> { foo: { \$eq: 3.4 } }
+- foo:eq:3,4 -----> { foo: { \$eq: 3.4 } }
+- foo:eq:2018-10-10T10:10:10 -----> { foo: { \$eq: new Date('2018-10-10T10:10:10') } }
+- foo:eq:2018-10-10 -----> { foo: { \$eq: new Date('2018-10-10') } }
+- foo:eq:true -----> { foo: { \$eq: true } }
+- foo:eq:false -----> { foo: { \$eq: false } }
+- foo:eq:"Foo Fighters is an awesome band" -----> { foo: { \$eq: "Foo Fighters is an awesome band" } }
+
+**If the value does fit in any of the previous cases, it is parsed as a string**
+
+- foo:eq:awesome -----> { foo: { \$eq: "awesome" } }
 
 ### **Supported Operators**
 
