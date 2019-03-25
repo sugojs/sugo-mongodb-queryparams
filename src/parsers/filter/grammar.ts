@@ -214,8 +214,12 @@ export const ParserRules = [
     name: 'VALUE',
     symbols: ['STRING'],
     postprocess(d) {
-      if (d[0] === 'true') { return true; }
-      if (d[0] === 'false') { return false; }
+      if (d[0] === 'true') {
+        return true;
+      }
+      if (d[0] === 'false') {
+        return false;
+      }
       return d[0];
     },
   },
@@ -405,7 +409,7 @@ export const ParserRules = [
     name: 'NUMERIC',
     symbols: ['NUMBER'],
     postprocess(d) {
-      return parseInt(d);
+      return parseInt(d, 10);
     },
   },
   { name: 'NUMBER$ebnf$1', symbols: [/[0-9]/] },
