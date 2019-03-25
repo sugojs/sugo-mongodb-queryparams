@@ -66,7 +66,7 @@ MILLISECONDS -> [0-9] [0-9] [0-9] {% function(d) { return d.join("") } %}
 
 
 NUMERIC -> NUMBER DECIMAL_SEPARATOR NUMBER {% function(d) { return parseFloat(d.join("").replace(/,/g,".")) } %}
-	| NUMBER {% function(d) { return parseInt(d) } %}
+	| NUMBER {% function(d) { return parseInt(d, 10) } %}
 	
 NUMBER -> [0-9]:+ {% function(d) { return d.join('').replace(/,/g,"") } %}
 
