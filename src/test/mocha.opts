@@ -1,4 +1,3 @@
---ui tdd
 --timeout 999999
---colors
---recursive
+--colors true
+--recursive true

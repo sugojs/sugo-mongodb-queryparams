@@ -99,12 +99,109 @@ describe('MongoDBQueryParams', () => {
       Object.keys(filter).length.should.be.eql(0);
     });
 
-    it('should create a mongodb query with one parameter', async () => {
-      const { filter } = MongoDbQueryParams.parseQueryParams({ filter: 'foo:eq:awesome' });
-      filter.foo.should.have.property('$eq');
-      filter.foo.$eq.should.be.eql('awesome');
+    describe('Value parsing', () => {
+      it('should parse the value as a integer', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:4',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(4);
+      });
+
+      it('should parse the value as a float (Passing a "," separated decimal) ', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:4,4',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(4.4);
+      });
+
+      it('should parse the value as a float (Passing a "." separated decimal) ', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:4.4',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(4.4);
+      });
+
+      it('should parse the value as a date if passed a date', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:2018-10-10',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(new Date('2018-10-10'));
+      });
+
+      it('should parse the value as true', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:true',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(true);
+      });
+
+      it('should parse the value as false', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:false',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(false);
+      });
+
+      it('should parse the value as string (Without quotes)', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:Hello',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql('Hello');
+      });
+
+      it('should parse the value as string (With quotes)', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:"Hello world"',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql('Hello world');
+      });
+
+      it('should parse the value as string (With a quoted number)', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:"4"',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql('4');
+      });
     });
 
+    it('should parse the value as a date if passed a datetime', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'foo:eq:2018-10-10T10:10:10',
+      });
+      filter.should.have.property('foo');
+      filter.foo.should.have.property('$eq');
+      filter.foo.$eq.should.be.eql(new Date('2018-10-10T10:10:10'));
+    });
+  });
+
+  describe(`Operators`, () => {
     it('should create a $eq search with the ":eq:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:eq:4',
@@ -162,7 +259,9 @@ describe('MongoDBQueryParams', () => {
       filter.number.should.have.property('$lte');
       filter.number.$lte.should.be.eql(4);
     });
+  });
 
+  describe(`Union`, () => {
     it('should chain $and and $or tags, parsing parenthesis', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:lte:4 AND number:gte:1 OR (boolean:eq:false)',

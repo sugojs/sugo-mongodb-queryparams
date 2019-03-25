@@ -1,7 +1,6 @@
-export const Lexer = undefined;
-const id = x => {
-  return x[0];
-};
+// Generated automatically by nearley, version 2.16.0
+// http://github.com/Hardmath123/nearley
+export const id = x => x[0];
 export const ParserRules = [
   {
     name: 'EXPRESSION',
@@ -38,13 +37,7 @@ export const ParserRules = [
     symbols: ['KEY', 'SEPARATOR', 'OPERATOR', 'SEPARATOR', 'VALUE'],
     postprocess(d) {
       const [key, separator1, operator, separator2, value] = d;
-      if (operator !== ':') {
-        return { [key]: { [operator]: value } };
-      } else if (typeof value !== 'string') {
-        return { [key]: value };
-      } else {
-        return { [key]: new RegExp(value, 'i') };
-      }
+      return { [key]: { [operator]: value } };
     },
   },
   {
@@ -181,10 +174,31 @@ export const ParserRules = [
       return d[0].join('');
     },
   },
-  { name: 'VALUE$ebnf$1', symbols: [/[a-zA-Z0-9@.\-:_]/] },
+  {
+    name: 'VALUE',
+    symbols: ['DATETIME'],
+    postprocess(d) {
+      return d[0];
+    },
+  },
+  {
+    name: 'VALUE',
+    symbols: ['NUMERIC'],
+    postprocess(d) {
+      return d[0];
+    },
+  },
+  {
+    name: 'VALUE',
+    symbols: ['BOOLEAN'],
+    postprocess(d) {
+      return d[0];
+    },
+  },
+  { name: 'VALUE$ebnf$1', symbols: [/./] },
   {
     name: 'VALUE$ebnf$1',
-    symbols: ['VALUE$ebnf$1', /[a-zA-Z0-9@.\-:_]/],
+    symbols: ['VALUE$ebnf$1', /./],
     postprocess: function arrpush(d) {
       return d[0].concat([d[1]]);
     },
@@ -196,109 +210,13 @@ export const ParserRules = [
       return d[1].join('');
     },
   },
-  { name: 'VALUE$ebnf$2', symbols: [/[0-9]/] },
-  {
-    name: 'VALUE$ebnf$2',
-    symbols: ['VALUE$ebnf$2', /[0-9]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
   {
     name: 'VALUE',
-    symbols: ['QUOTE', 'VALUE$ebnf$2', 'QUOTE'],
+    symbols: ['STRING'],
     postprocess(d) {
-      return d[1].join('');
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['QUOTE', 'DATETIME', 'QUOTE'],
-    postprocess(d) {
-      return d[0].join('');
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['DATETIME'],
-    postprocess(d) {
+      if (d[0] === 'true') { return true; }
+      if (d[0] === 'false') { return false; }
       return d[0];
-    },
-  },
-  { name: 'VALUE$ebnf$3', symbols: [/[0-9]/] },
-  {
-    name: 'VALUE$ebnf$3',
-    symbols: ['VALUE$ebnf$3', /[0-9]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['VALUE$ebnf$3'],
-    postprocess(d) {
-      return parseFloat(d[0].join(''));
-    },
-  },
-  { name: 'VALUE$ebnf$4', symbols: [/[0-9]/] },
-  {
-    name: 'VALUE$ebnf$4',
-    symbols: ['VALUE$ebnf$4', /[0-9]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  { name: 'VALUE$ebnf$5', symbols: [/[a-zA-Z@.\-:_]/] },
-  {
-    name: 'VALUE$ebnf$5',
-    symbols: ['VALUE$ebnf$5', /[a-zA-Z@.\-:_]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['VALUE$ebnf$4', 'VALUE$ebnf$5'],
-    postprocess(d) {
-      return d[0].join('');
-    },
-  },
-  { name: 'VALUE$ebnf$6', symbols: [/[a-zA-Z@.\-:_]/] },
-  {
-    name: 'VALUE$ebnf$6',
-    symbols: ['VALUE$ebnf$6', /[a-zA-Z@.\-:_]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  { name: 'VALUE$ebnf$7', symbols: [/[0-9]/] },
-  {
-    name: 'VALUE$ebnf$7',
-    symbols: ['VALUE$ebnf$7', /[0-9]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['VALUE$ebnf$6', 'VALUE$ebnf$7'],
-    postprocess(d) {
-      return d[0].join('');
-    },
-  },
-  { name: 'VALUE$ebnf$8', symbols: [/[a-zA-Z@.\-:_]/] },
-  {
-    name: 'VALUE$ebnf$8',
-    symbols: ['VALUE$ebnf$8', /[a-zA-Z@.\-:_]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
-  {
-    name: 'VALUE',
-    symbols: ['VALUE$ebnf$8'],
-    postprocess(d) {
-      return d[0].join('');
     },
   },
   {
@@ -476,6 +394,82 @@ export const ParserRules = [
       return d.join('');
     },
   },
+  {
+    name: 'NUMERIC',
+    symbols: ['NUMBER', 'DECIMAL_SEPARATOR', 'NUMBER'],
+    postprocess(d) {
+      return parseFloat(d.join('').replace(/,/g, '.'));
+    },
+  },
+  {
+    name: 'NUMERIC',
+    symbols: ['NUMBER'],
+    postprocess(d) {
+      return parseInt(d);
+    },
+  },
+  { name: 'NUMBER$ebnf$1', symbols: [/[0-9]/] },
+  {
+    name: 'NUMBER$ebnf$1',
+    symbols: ['NUMBER$ebnf$1', /[0-9]/],
+    postprocess: function arrpush(d) {
+      return d[0].concat([d[1]]);
+    },
+  },
+  {
+    name: 'NUMBER',
+    symbols: ['NUMBER$ebnf$1'],
+    postprocess(d) {
+      return d.join('').replace(/,/g, '');
+    },
+  },
+  { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: '.' }] },
+  { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: ',' }] },
+  { name: 'STRING$ebnf$1', symbols: [/[a-zA-Z@.\-:_]/] },
+  {
+    name: 'STRING$ebnf$1',
+    symbols: ['STRING$ebnf$1', /[a-zA-Z@.\-:_]/],
+    postprocess: function arrpush(d) {
+      return d[0].concat([d[1]]);
+    },
+  },
+  {
+    name: 'STRING',
+    symbols: ['STRING$ebnf$1'],
+    postprocess(d) {
+      return d[0].join('');
+    },
+  },
+  {
+    name: 'BOOLEAN',
+    symbols: ['TRUE'],
+    postprocess(d) {
+      return true;
+    },
+  },
+  {
+    name: 'BOOLEAN',
+    symbols: ['FALSE'],
+    postprocess(d) {
+      return false;
+    },
+  },
+  {
+    name: 'TRUE$string$1',
+    symbols: [{ literal: 't' }, { literal: 'r' }, { literal: 'u' }, { literal: 'e' }],
+    postprocess: function joiner(d) {
+      return d.join('');
+    },
+  },
+  { name: 'TRUE', symbols: ['TRUE$string$1'] },
+  {
+    name: 'FALSE$string$1',
+    symbols: [{ literal: 'f' }, { literal: 'a' }, { literal: 'l' }, { literal: 's' }, { literal: 'e' }],
+    postprocess: function joiner(d) {
+      return d.join('');
+    },
+  },
+  { name: 'FALSE', symbols: ['FALSE$string$1'] },
   { name: 'QUOTE', symbols: [{ literal: "'" }] },
   { name: 'QUOTE', symbols: [{ literal: '"' }] },
   { name: '_$ebnf$1', symbols: [{ literal: ' ' }] },

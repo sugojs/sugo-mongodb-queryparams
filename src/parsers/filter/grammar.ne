@@ -2,14 +2,7 @@ EXPRESSION -> EXPRESSION _ CONNECTOR _ EXPRESSION {% function(d) { return { [d[2
 	| "(" _:? EXPRESSION _:? ")" {% function(d) {return d[2]} %}
 	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) { 
 	const [key, separator1, operator, separator2, value] = d
-	if (operator != ':') {
-		return { [key]: { [operator]: value } }
-	}
-	else if (typeof value !== 'string'){
-		return { [key]: value  }
-	} else {
-		return { [key]: new RegExp(value, 'i')  }
-	}
+	return { [key]: { [operator] : value }}
 } %}
 	| KEY {% function(d) {return {$text:{$search: d[0] }}} %}
 
@@ -25,14 +18,16 @@ OPERATOR -> "eq" {% function() { return "$eq" } %}
 
 KEY -> [0-9a-zA-Z_$.]:+ {% function(d) {return d[0].join("")} %}
 
-VALUE -> QUOTE [a-zA-Z0-9@.\-:_]:+ QUOTE {% function(d) { return d[1].join("") } %}
-	| QUOTE [0-9]:+ QUOTE {% function(d) { return d[1].join("") } %}
-	| QUOTE DATETIME QUOTE {% function(d) { return d[0].join("") } %}
-	| DATETIME {% function(d) { return d[0] } %}
-	| [0-9]:+ {% function(d) { return parseFloat(d[0].join(""))} %}
-	| [0-9]:+ [a-zA-Z@.\-:_]:+ {% function(d) { return d[0].join("") } %}
-	| [a-zA-Z@.\-:_]:+ [0-9]:+ {% function(d) { return d[0].join("") } %}
-	| [a-zA-Z@.\-:_]:+ {% function(d) { return d[0].join("") } %}
+VALUE -> DATETIME {% function(d) { return d[0] } %}
+	| NUMERIC {% function(d) { return d[0] } %}
+	| BOOLEAN {% function(d) { return d[0] } %}
+	| QUOTE .:+ QUOTE {% function(d) { return d[1].join("") } %}
+	| STRING {% function(d) { 
+		if (d[0] === "true") return true
+		if (d[0] === "false") return false
+		return d[0] 
+} 
+%}
 
 DATETIME -> DATE "T" TIME "Z" {% function(d) { return new Date(d.join("")) } %}
 	| DATE "T" TIME {% function(d) { return new Date(d.join("")) } %}
@@ -68,6 +63,24 @@ SECONDS -> [0-5] [0-9]  {% function(d) { return d.join("") } %}
 MILLISECONDS -> [0-9] [0-9] [0-9] {% function(d) { return d.join("") } %}
 	| [0-9] [0-9] {% function(d) { return d.join("") } %}
 	| [0-9] {% function(d) { return d.join("") } %}
+
+
+NUMERIC -> NUMBER DECIMAL_SEPARATOR NUMBER {% function(d) { return parseFloat(d.join("").replace(/,/g,".")) } %}
+	| NUMBER {% function(d) { return parseInt(d) } %}
+	
+NUMBER -> [0-9]:+ {% function(d) { return d.join('').replace(/,/g,"") } %}
+
+DECIMAL_SEPARATOR -> "." 
+	| ","
+
+STRING -> [a-zA-Z@.\-:_]:+ {% function(d) { return d[0].join("") } %}
+
+BOOLEAN -> TRUE {% function(d) { return true } %}
+	| FALSE {% function(d) { return false } %}
+
+TRUE -> "true" 
+
+FALSE -> "false"
 
 QUOTE -> "'"
 	| "\""

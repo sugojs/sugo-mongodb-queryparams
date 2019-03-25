@@ -8,11 +8,11 @@
     "dist/**/*"
   ],
   "scripts": {
-    "compile-filter-parser": "nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
-    "compile-sort-parser": "nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
-    "compile-select-parser": "nearleyc src/parsers/select/grammar.ne -o src/parsers/select/grammar.ts",
+    "compile-filter-parser": "rimraf src/parsers/filter/grammar.ts && nearleyc src/parsers/filter/grammar.ne -o src/parsers/filter/grammar.ts",
+    "compile-sort-parser": "rimraf src/parsers/sort/grammar.ts && nearleyc src/parsers/sort/grammar.ne -o src/parsers/sort/grammar.ts",
+    "compile-select-parser": "rimraf src/parsers/select/grammar.ts && nearleyc src/parsers/select/grammar.ne -o src/parsers/select/grammar.ts",
     "compile-parsers": "npm run compile-filter-parser && npm run compile-sort-parser && npm run compile-select-parser",
-    "build": "tsc",
+    "build": "rimraf dist/ && tsc",
     "test": "mocha -r ts-node/register src/test/*.test.ts",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
@@ -31,23 +31,24 @@
     "email": "franciscojsucreg@gmail.com"
   },
   "dependencies": {
-    "nearley": "^2.15.1"
+    "nearley": "^2.16.0"
   },
   "devDependencies": {
-    "@types/nearley": "^2.11.0",
-    "chai": "^4.2.0",
-    "chai-http": "^4.2.0",
-    "mocha": "^5.2.0",
     "@types/chai": "^4.1.7",
     "@types/cors": "^2.8.4",
     "@types/mocha": "^5.2.5",
+    "@types/nearley": "^2.11.0",
     "@types/supertest": "^2.0.7",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "mocha": "^6.0.2",
     "prettier": "^1.16.3",
-    "supertest": "^3.4.2",
-    "ts-node": "^8.0.2",
-    "tslint": "^5.12.1",
+    "rimraf": "^2.6.3",
+    "supertest": "^4.0.2",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
     "tslint-config-prettier": "^1.17.0",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.4000"
   },
   "keywords": [
     "queryparam",
