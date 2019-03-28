@@ -1,4 +1,5 @@
 import * as chai from 'chai';
+import * as mongodb from 'mongodb';
 import InvalidQueryParamException from '../exceptions/InvalidQueryParamException';
 import MongoDbQueryParams from '../MongoDBQueryParams';
 chai.should();
@@ -189,15 +190,25 @@ describe('MongoDBQueryParams', () => {
         filter.foo.should.have.property('$eq');
         filter.foo.$eq.should.be.eql('4');
       });
-    });
 
-    it('should parse the value as a date if passed a datetime', async () => {
-      const { filter } = MongoDbQueryParams.parseQueryParams({
-        filter: 'foo:eq:2018-10-10T10:10:10',
+      it('should parse the value as a date if passed a datetime', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:2018-10-10T10:10:10',
+        });
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.eql(new Date('2018-10-10T10:10:10'));
       });
-      filter.should.have.property('foo');
-      filter.foo.should.have.property('$eq');
-      filter.foo.$eq.should.be.eql(new Date('2018-10-10T10:10:10'));
+
+      it('should parse a MongoDB ObjectId is given a valid string', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:eq:5c9cac76536b87092f83f52f',
+        });
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$eq');
+        filter.foo.$eq.should.be.instanceof(mongodb.ObjectId);
+        filter.foo.$eq.toHexString().should.be.eql('5c9cac76536b87092f83f52f');
+      });
     });
   });
 

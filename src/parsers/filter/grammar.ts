@@ -1,7 +1,35 @@
 // Generated automatically by nearley, version 2.16.0
 // http://github.com/Hardmath123/nearley
-export const id = x => x[0];
-export const ParserRules = [
+// Bypasses TS6133. Allow declared but unused functions.
+// @ts-ignore
+function id(d: any[]): any {
+  return d[0];
+}
+
+export interface Token {
+  value: any;
+  [key: string]: any;
+}
+
+export interface Lexer {
+  reset: (chunk: string, info: any) => void;
+  next: () => Token | undefined;
+  save: () => any;
+  formatError: (token: Token) => string;
+  has: (tokenType: string) => boolean;
+}
+
+export interface NearleyRule {
+  name: string;
+  symbols: NearleySymbol[];
+  postprocess?: (d: any[], loc?: number, reject?: {}) => any;
+}
+
+export type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
+
+export let Lexer: Lexer | undefined;
+
+export let ParserRules: NearleyRule[] = [
   {
     name: 'EXPRESSION',
     symbols: ['EXPRESSION', '_', 'CONNECTOR', '_', 'EXPRESSION'],
@@ -10,21 +38,9 @@ export const ParserRules = [
     },
   },
   { name: 'EXPRESSION$ebnf$1', symbols: ['_'], postprocess: id },
-  {
-    name: 'EXPRESSION$ebnf$1',
-    symbols: [],
-    postprocess(d) {
-      return null;
-    },
-  },
+  { name: 'EXPRESSION$ebnf$1', symbols: [], postprocess: () => null },
   { name: 'EXPRESSION$ebnf$2', symbols: ['_'], postprocess: id },
-  {
-    name: 'EXPRESSION$ebnf$2',
-    symbols: [],
-    postprocess(d) {
-      return null;
-    },
-  },
+  { name: 'EXPRESSION$ebnf$2', symbols: [], postprocess: () => null },
   {
     name: 'EXPRESSION',
     symbols: [{ literal: '(' }, 'EXPRESSION$ebnf$1', 'EXPRESSION', 'EXPRESSION$ebnf$2', { literal: ')' }],
@@ -47,13 +63,7 @@ export const ParserRules = [
       return { $text: { $search: d[0] } };
     },
   },
-  {
-    name: 'CONNECTOR$string$1',
-    symbols: [{ literal: 'O' }, { literal: 'R' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
-  },
+  { name: 'CONNECTOR$string$1', symbols: [{ literal: 'O' }, { literal: 'R' }], postprocess: d => d.join('') },
   {
     name: 'CONNECTOR',
     symbols: ['CONNECTOR$string$1'],
@@ -64,9 +74,7 @@ export const ParserRules = [
   {
     name: 'CONNECTOR$string$2',
     symbols: [{ literal: 'A' }, { literal: 'N' }, { literal: 'D' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   {
     name: 'CONNECTOR',
@@ -75,13 +83,7 @@ export const ParserRules = [
       return '$and';
     },
   },
-  {
-    name: 'OPERATOR$string$1',
-    symbols: [{ literal: 'e' }, { literal: 'q' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
-  },
+  { name: 'OPERATOR$string$1', symbols: [{ literal: 'e' }, { literal: 'q' }], postprocess: d => d.join('') },
   {
     name: 'OPERATOR',
     symbols: ['OPERATOR$string$1'],
@@ -92,9 +94,7 @@ export const ParserRules = [
   {
     name: 'OPERATOR$string$2',
     symbols: [{ literal: 'n' }, { literal: 'e' }, { literal: 'q' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   {
     name: 'OPERATOR',
@@ -106,9 +106,7 @@ export const ParserRules = [
   {
     name: 'OPERATOR$string$3',
     symbols: [{ literal: 'g' }, { literal: 't' }, { literal: 'e' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   {
     name: 'OPERATOR',
@@ -120,9 +118,7 @@ export const ParserRules = [
   {
     name: 'OPERATOR$string$4',
     symbols: [{ literal: 'l' }, { literal: 't' }, { literal: 'e' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   {
     name: 'OPERATOR',
@@ -131,13 +127,7 @@ export const ParserRules = [
       return '$lte';
     },
   },
-  {
-    name: 'OPERATOR$string$5',
-    symbols: [{ literal: 'g' }, { literal: 't' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
-  },
+  { name: 'OPERATOR$string$5', symbols: [{ literal: 'g' }, { literal: 't' }], postprocess: d => d.join('') },
   {
     name: 'OPERATOR',
     symbols: ['OPERATOR$string$5'],
@@ -145,13 +135,7 @@ export const ParserRules = [
       return '$gt';
     },
   },
-  {
-    name: 'OPERATOR$string$6',
-    symbols: [{ literal: 'l' }, { literal: 't' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
-  },
+  { name: 'OPERATOR$string$6', symbols: [{ literal: 'l' }, { literal: 't' }], postprocess: d => d.join('') },
   {
     name: 'OPERATOR',
     symbols: ['OPERATOR$string$6'],
@@ -160,13 +144,7 @@ export const ParserRules = [
     },
   },
   { name: 'KEY$ebnf$1', symbols: [/[0-9a-zA-Z_$.]/] },
-  {
-    name: 'KEY$ebnf$1',
-    symbols: ['KEY$ebnf$1', /[0-9a-zA-Z_$.]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
+  { name: 'KEY$ebnf$1', symbols: ['KEY$ebnf$1', /[0-9a-zA-Z_$.]/], postprocess: d => d[0].concat([d[1]]) },
   {
     name: 'KEY',
     symbols: ['KEY$ebnf$1'],
@@ -196,13 +174,7 @@ export const ParserRules = [
     },
   },
   { name: 'VALUE$ebnf$1', symbols: [/./] },
-  {
-    name: 'VALUE$ebnf$1',
-    symbols: ['VALUE$ebnf$1', /./],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
+  { name: 'VALUE$ebnf$1', symbols: ['VALUE$ebnf$1', /./], postprocess: d => d[0].concat([d[1]]) },
   {
     name: 'VALUE',
     symbols: ['QUOTE', 'VALUE$ebnf$1', 'QUOTE'],
@@ -213,14 +185,21 @@ export const ParserRules = [
   {
     name: 'VALUE',
     symbols: ['STRING'],
-    postprocess(d) {
-      if (d[0] === 'true') {
-        return true;
+    postprocess(d, p, reject) {
+      const value = d[0];
+      if (value === 'true') {
+        return reject;
       }
-      if (d[0] === 'false') {
-        return false;
+      if (value === 'false') {
+        return reject;
       }
-      return d[0];
+      if (!isNaN(value)) {
+        return reject;
+      }
+      if (!isNaN(new Date(value).getTime())) {
+        return reject;
+      }
+      return value;
     },
   },
   {
@@ -409,17 +388,11 @@ export const ParserRules = [
     name: 'NUMERIC',
     symbols: ['NUMBER'],
     postprocess(d) {
-      return parseInt(d, 10);
+      return parseInt(d as any, 10);
     },
   },
   { name: 'NUMBER$ebnf$1', symbols: [/[0-9]/] },
-  {
-    name: 'NUMBER$ebnf$1',
-    symbols: ['NUMBER$ebnf$1', /[0-9]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
+  { name: 'NUMBER$ebnf$1', symbols: ['NUMBER$ebnf$1', /[0-9]/], postprocess: d => d[0].concat([d[1]]) },
   {
     name: 'NUMBER',
     symbols: ['NUMBER$ebnf$1'],
@@ -429,14 +402,8 @@ export const ParserRules = [
   },
   { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: '.' }] },
   { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: ',' }] },
-  { name: 'STRING$ebnf$1', symbols: [/[a-zA-Z@.\-:_]/] },
-  {
-    name: 'STRING$ebnf$1',
-    symbols: ['STRING$ebnf$1', /[a-zA-Z@.\-:_]/],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
+  { name: 'STRING$ebnf$1', symbols: [/[a-zA-Z@.\-:_0-9]/] },
+  { name: 'STRING$ebnf$1', symbols: ['STRING$ebnf$1', /[a-zA-Z@.\-:_0-9]/], postprocess: d => d[0].concat([d[1]]) },
   {
     name: 'STRING',
     symbols: ['STRING$ebnf$1'],
@@ -461,30 +428,21 @@ export const ParserRules = [
   {
     name: 'TRUE$string$1',
     symbols: [{ literal: 't' }, { literal: 'r' }, { literal: 'u' }, { literal: 'e' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   { name: 'TRUE', symbols: ['TRUE$string$1'] },
   {
     name: 'FALSE$string$1',
     symbols: [{ literal: 'f' }, { literal: 'a' }, { literal: 'l' }, { literal: 's' }, { literal: 'e' }],
-    postprocess: function joiner(d) {
-      return d.join('');
-    },
+    postprocess: d => d.join(''),
   },
   { name: 'FALSE', symbols: ['FALSE$string$1'] },
   { name: 'QUOTE', symbols: [{ literal: "'" }] },
   { name: 'QUOTE', symbols: [{ literal: '"' }] },
   { name: '_$ebnf$1', symbols: [{ literal: ' ' }] },
-  {
-    name: '_$ebnf$1',
-    symbols: ['_$ebnf$1', { literal: ' ' }],
-    postprocess: function arrpush(d) {
-      return d[0].concat([d[1]]);
-    },
-  },
+  { name: '_$ebnf$1', symbols: ['_$ebnf$1', { literal: ' ' }], postprocess: d => d[0].concat([d[1]]) },
   { name: '_', symbols: ['_$ebnf$1'] },
   { name: 'SEPARATOR', symbols: [{ literal: ':' }] },
 ];
-export const ParserStart = 'EXPRESSION';
+
+export let ParserStart: string = 'EXPRESSION';

@@ -1,3 +1,4 @@
+@preprocessor typescript
 EXPRESSION -> EXPRESSION _ CONNECTOR _ EXPRESSION {% function(d) { return { [d[2]] : [d[0], d[4]] } } %}
 	| "(" _:? EXPRESSION _:? ")" {% function(d) {return d[2]} %}
 	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) { 
@@ -22,10 +23,13 @@ VALUE -> DATETIME {% function(d) { return d[0] } %}
 	| NUMERIC {% function(d) { return d[0] } %}
 	| BOOLEAN {% function(d) { return d[0] } %}
 	| QUOTE .:+ QUOTE {% function(d) { return d[1].join("") } %}
-	| STRING {% function(d) { 
-		if (d[0] === "true") return true
-		if (d[0] === "false") return false
-		return d[0] 
+	| STRING {% function(d, p, reject) { 
+		const value = d[0]
+		if (value === "true") return reject
+		if (value === "false") return reject
+		if (!isNaN(value)) return reject
+		if (!isNaN(new Date(value).getTime())) return reject;
+		return value
 } 
 %}
 
@@ -73,7 +77,7 @@ NUMBER -> [0-9]:+ {% function(d) { return d.join('').replace(/,/g,"") } %}
 DECIMAL_SEPARATOR -> "." 
 	| ","
 
-STRING -> [a-zA-Z@.\-:_]:+ {% function(d) { return d[0].join("") } %}
+STRING -> [a-zA-Z@.\-:_0-9]:+ {% function(d) { return d[0].join("") } %}
 
 BOOLEAN -> TRUE {% function(d) { return true } %}
 	| FALSE {% function(d) { return false } %}

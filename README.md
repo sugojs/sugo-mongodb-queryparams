@@ -2,6 +2,10 @@
 
 Querystring parser that follows a simple ruleset to form querystrings and them builds the apropiate queries for mongodb databases.
 
+It uses [nearley](https://www.npmjs.com/package/nearley) package to create the neccesary grammars to parse. 
+
+[NearleyJS Website](https://nearley.js.org/docs/index)
+
 ## **How to install**
 
 ```shell
@@ -40,6 +44,7 @@ The Values are parsed to their correspoding types.
 - foo:eq:true -----> { foo: { \$eq: true } }
 - foo:eq:false -----> { foo: { \$eq: false } }
 - foo:eq:"Foo Fighters is an awesome band" -----> { foo: { \$eq: "Foo Fighters is an awesome band" } }
+- foo:eq:5c9cac76536b87092f83f52f ----> { foo: { \$eq: new mongodb.ObjectId("5c9cac76536b87092f83f52f") } }
 
 **If the value does fit in any of the previous cases, it is parsed as a string**
 
