@@ -25,17 +25,17 @@ export const mergeDeep = (target: object, ...sources: object[]) => {
   return mergeDeep(target, ...sources);
 };
 
-export const cleanQuery = (doc: object, operator = '$and') => {
+export const cleanQuery = (doc: object) => {
   for (const key in doc) {
     if (doc.hasOwnProperty(key)) {
       const value = doc[key];
-      if (OPERATORS.includes(key) && operator === key) {
+      if ('$and' === key) {
         for (const subdoc of value) {
-          doc = mergeDeep(doc, cleanQuery(subdoc, key));
+          doc = mergeDeep(doc, cleanQuery(subdoc));
         }
         delete doc[key];
-      } else if (OPERATORS.includes(key) && operator !== key) {
-        doc[key] = value.map(v => cleanQuery(v, key));
+      } else if ('$or' === key) {
+        doc[key] = value.map(v => cleanQuery(v));
       }
     }
   }

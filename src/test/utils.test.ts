@@ -46,15 +46,6 @@ describe('Clean Query methods', () => {
       result.should.have.property('bar');
     });
 
-    it('It should remove rendundat $or', async () => {
-      const result = cleanQuery({
-        $and: [{ $or: [{ foo: { $eq: true } }, { chao: { $eq: true } }] }],
-        bar: { $eq: false },
-      });
-      result.should.have.property('$or');
-      result.should.have.property('bar');
-    });
-
     it('It should remove rendundat $and before any $or', async () => {
       const result: any = cleanQuery({
         $and: [
@@ -92,10 +83,10 @@ describe('Clean Query methods', () => {
       result.should.have.property('bar');
       result.should.have.property('foo');
       result.$or[0].should.have.property('chao');
-      result.$or[0].should.have.property('hello');
+      result.$or[1].should.have.property('hello');
     });
 
-    it('It should merge objects with 2 levels of recursion filled with Dates', async () => {
+    it('It should merge $ands even after an $or', async () => {
       const result: any = cleanQuery({
         $or: [
           {
@@ -129,10 +120,48 @@ describe('Clean Query methods', () => {
         ],
       });
       result.should.have.property('$or');
-      result.should.have.property('bar');
-      result.should.have.property('foo');
-      result.$or[0].should.have.property('bar');
+      result.$or[0].should.have.property('chao');
+      result.$or[0].should.have.property('hello');
       result.$or[0].should.have.property('foo');
+      result.$or[1].should.have.property('bar');
+    });
+
+    it('It should conserve $or', async () => {
+      const result: any = cleanQuery({
+        $or: [
+          {
+            $or: [
+              {
+                $or: [
+                  {
+                    chao: {
+                      $gte: true,
+                    },
+                  },
+                  {
+                    hello: {
+                      $lte: false,
+                    },
+                  },
+                ],
+              },
+              {
+                foo: {
+                  $eq: true,
+                },
+              },
+            ],
+          },
+          {
+            bar: {
+              $eq: 1,
+            },
+          },
+        ],
+      });
+      result.should.have.property('$or');
+      result.$or[0].should.have.property('$or');
+      result.$or[0].$or[0].should.have.property('$or');
     });
   });
 });
