@@ -1,7 +1,7 @@
 import * as assert from 'assert';
-import * as mongodb from 'mongodb';
 import InvalidQueryParamException from './exceptions/InvalidQueryParamException';
 import * as parsers from './parsers';
+import { cleanQuery, parseObjectIds } from './utils';
 
 export interface ISelect {
   [key: string]: 0 | 1;
@@ -82,20 +82,9 @@ export class MongoDbQueryParams {
         return {};
       }
       const parser = parsers.getFilterGrammar();
-      const [filter] = parser.feed(rawFilter).results;
-      for (const key in filter) {
-        if (filter.hasOwnProperty(key)) {
-          const operation = filter[key];
-          for (const operator in operation) {
-            if (operation.hasOwnProperty(operator)) {
-              const value = operation[operator];
-              if (typeof value === 'string' && mongodb.ObjectId.isValid(value)) {
-                operation[operator] = new mongodb.ObjectId(value);
-              }
-            }
-          }
-        }
-      }
+      let [filter] = parser.feed(rawFilter).results;
+      filter = cleanQuery(filter);
+      filter = parseObjectIds(filter);
       return filter;
     } catch (error) {
       throw new InvalidQueryParamException('filter', rawFilter);
