@@ -1,7 +1,8 @@
 const OPERATORS = ['$and', '$or'];
 import { ObjectId } from 'mongodb';
 
-export const isObject = (item: any) => item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date);
+export const isObject = (item: any) =>
+  item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date);
 
 export const mergeDeep = (target: object, ...sources: object[]) => {
   if (!sources.length) {
