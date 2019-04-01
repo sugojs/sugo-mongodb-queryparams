@@ -193,11 +193,21 @@ export let ParserRules: INearleyRule[] = [
     symbols: ['STRING'],
     postprocess(d, p, reject) {
       const value = d[0];
-      if (value === 'true') { return reject; }
-      if (value === 'false') { return reject; }
-      if (!isNaN(value)) { return reject; }
-      if (!isNaN(new Date(value).getTime())) { return reject; }
-      if (value.includes(':')) { return reject; }
+      if (value === 'true') {
+        return reject;
+      }
+      if (value === 'false') {
+        return reject;
+      }
+      if (!isNaN(value)) {
+        return reject;
+      }
+      if (!isNaN(new Date(value).getTime())) {
+        return reject;
+      }
+      if (value.includes(':')) {
+        return reject;
+      }
       return value;
     },
   },
