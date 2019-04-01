@@ -1,11 +1,11 @@
 @preprocessor typescript
+
 EXPRESSION -> EXPRESSION _ CONNECTOR _ EXPRESSION {% function(d) { return { [d[2]] : [d[0], d[4]] } } %}
 	| "(" _:? EXPRESSION _:? ")" {% function(d) {return d[2]} %}
-	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) { 
-	const [key, separator1, operator, separator2, value] = d
-	return { [key]: { [operator] : value }}
-} %}
+	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) {  return { [d[0]]: { [d[2]] : d[4] }} } %}
+	| KEY SEPARATOR VALUE {% function(d) {return {[d[0]]: d[2]}} %}
 	| KEY {% function(d) {return {$text:{$search: d[0] }}} %}
+	
 
 CONNECTOR -> "OR" {% function() { return "$or" } %}
 	| "AND" {% function() { return "$and" } %}
@@ -29,6 +29,7 @@ VALUE -> DATETIME {% function(d) { return d[0] } %}
 		if (value === "false") return reject
 		if (!isNaN(value)) return reject
 		if (!isNaN(new Date(value).getTime())) return reject;
+		if (value.includes(":")) return reject
 		return value
 } 
 %}

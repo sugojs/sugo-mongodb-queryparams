@@ -213,6 +213,15 @@ describe('MongoDBQueryParams', () => {
   });
 
   describe(`Operators`, () => {
+    it('should create a simple value query if only given the value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:4',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.be.eql(4);
+    });
+
     it('should create a $eq search with the ":eq:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:eq:4',
