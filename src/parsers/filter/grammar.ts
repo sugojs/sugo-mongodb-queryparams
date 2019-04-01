@@ -27,7 +27,7 @@ export interface INearleyRule {
 
 export type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
 
-export let Lexer: ILexer | undefined;
+export let ILexer: ILexer | undefined;
 
 export let ParserRules: INearleyRule[] = [
   {
@@ -295,7 +295,7 @@ export let ParserRules: INearleyRule[] = [
     symbols: [{ literal: '[' }, 'VALUE', 'VALUE$ebnf$2', { literal: ']' }],
     postprocess(d) {
       function flat(array, depth = 1) {
-        return array.reduce(function(result, toFlatten) {
+        return array.reduce((result, toFlatten) => {
           return result.concat(Array.isArray(toFlatten) && depth - 1 ? flat(toFlatten, depth - 1) : toFlatten);
         }, []);
       }

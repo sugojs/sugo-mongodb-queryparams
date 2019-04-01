@@ -45,7 +45,7 @@ VALUE -> DATETIME {% function(d) { return d[0] } %}
 } %}
 	| "[" VALUE ("," VALUE):+ "]" {% function(d) { 
 	function flat(array, depth = 1){
-		return array.reduce(function (result, toFlatten) {
+		return array.reduce((result, toFlatten) => {
 			return result.concat((Array.isArray(toFlatten) && (depth-1)) ? flat(toFlatten,depth-1) : toFlatten);
 		}, [])
 	}
