@@ -111,16 +111,6 @@ describe('MongoDBQueryParams', () => {
         filter.foo.$eq.should.be.eql(4);
       });
 
-      it('should parse the value as a float (Passing a "," separated decimal) ', async () => {
-        const { filter } = MongoDbQueryParams.parseQueryParams({
-          filter: 'foo:eq:4,4',
-        });
-
-        filter.should.have.property('foo');
-        filter.foo.should.have.property('$eq');
-        filter.foo.$eq.should.be.eql(4.4);
-      });
-
       it('should parse the value as a float (Passing a "." separated decimal) ', async () => {
         const { filter } = MongoDbQueryParams.parseQueryParams({
           filter: 'foo:eq:4.4',
@@ -209,6 +199,17 @@ describe('MongoDBQueryParams', () => {
         filter.foo.$eq.should.be.instanceof(mongodb.ObjectId);
         filter.foo.$eq.toHexString().should.be.eql('5c9cac76536b87092f83f52f');
       });
+
+      it('should parse an array if given comma separated values within brackets', async () => {
+        const { filter } = MongoDbQueryParams.parseQueryParams({
+          filter: 'foo:in:[4,5,6,7]',
+        });
+
+        filter.should.have.property('foo');
+        filter.foo.should.have.property('$in');
+        filter.foo.$in.length.should.be.eql(4);
+        Array.isArray(filter.foo.$in).should.be.eq(true);
+      });
     });
   });
 
@@ -232,9 +233,9 @@ describe('MongoDBQueryParams', () => {
       filter.number.$eq.should.be.eql(4);
     });
 
-    it('should create a $ne search with the ":neq:" and a value', async () => {
+    it('should create a $ne search with the ":ne:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
-        filter: 'number:neq:4',
+        filter: 'number:ne:4',
       });
 
       filter.should.have.property('number');
@@ -278,6 +279,56 @@ describe('MongoDBQueryParams', () => {
       filter.should.have.property('number');
       filter.number.should.have.property('$lte');
       filter.number.$lte.should.be.eql(4);
+    });
+
+    it('should create a $regex search with the ":regex:" and a value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:regex:foo',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.have.property('$regex');
+      filter.number.$regex.should.be.eql(new RegExp('foo'));
+    });
+
+    it('should create a case insensitive $regex search with the ":iregex:" and a value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:iregex:foo',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.have.property('$regex');
+      filter.number.$regex.should.be.eql(new RegExp('foo', 'i'));
+    });
+
+    it('should create an $exists search with the ":exists:" and a value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:exists:true',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.have.property('$exists');
+      filter.number.$exists.should.be.eql(true);
+    });
+
+    it('should create an $in search with the ":in:" and a value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:in:[3,4]',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.have.property('$in');
+      filter.number.$in.should.be.eql([3, 4]);
+    });
+
+    it('should create an $nin search with the ":nin:" and a value', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'number:nin:[3,4]',
+      });
+
+      filter.should.have.property('number');
+      filter.number.should.have.property('$nin');
+      filter.number.$nin.should.be.eql([3, 4]);
     });
   });
 

@@ -1,8 +1,14 @@
 @preprocessor typescript
-
 EXPRESSION -> EXPRESSION _ CONNECTOR _ EXPRESSION {% function(d) { return { [d[2]] : [d[0], d[4]] } } %}
 	| "(" _:? EXPRESSION _:? ")" {% function(d) {return d[2]} %}
-	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) {  return { [d[0]]: { [d[2]] : d[4] }} } %}
+	| KEY SEPARATOR OPERATOR SEPARATOR VALUE {% function(d) {  
+	if (d[2] === '$regex'){
+		return { [d[0]]: { $regex: new RegExp(d[4])}}
+	} else if (d[2] === '$iregex'){
+		return { [d[0]]: { $regex: new RegExp(d[4], "i")}}
+	}
+	return { [d[0]]: { [d[2]] : d[4] }} } 
+%}
 	| KEY SEPARATOR VALUE {% function(d) {return {[d[0]]: d[2]}} %}
 	| KEY {% function(d) {return {$text:{$search: d[0] }}} %}
 	
@@ -11,11 +17,16 @@ CONNECTOR -> "OR" {% function() { return "$or" } %}
 	| "AND" {% function() { return "$and" } %}
 
 OPERATOR -> "eq" {% function() { return "$eq" } %}
-	| "neq" {% function() { return "$ne" } %}
+	| "ne" {% function() { return "$ne" } %}
     | "gte" {% function() { return "$gte" } %}
     | "lte" {% function() { return "$lte" } %}
     | "gt" {% function() { return "$gt" } %}
     | "lt" {% function() { return "$lt" } %}
+	| "regex" {% function() { return "$regex" } %}
+	| "iregex" {% function() { return "$iregex" } %}
+	| "exists" {% function() { return "$exists" } %}
+	| "in" {% function() { return "$in" } %}
+	| "nin" {% function() { return "$nin" } %}
 
 KEY -> [0-9a-zA-Z_$.]:+ {% function(d) {return d[0].join("")} %}
 
@@ -31,7 +42,14 @@ VALUE -> DATETIME {% function(d) { return d[0] } %}
 		if (!isNaN(new Date(value).getTime())) return reject;
 		if (value.includes(":")) return reject
 		return value
-} 
+} %}
+	| "[" VALUE ("," VALUE):+ "]" {% function(d) { 
+	function flat(array, depth = 1){
+		return array.reduce(function (result, toFlatten) {
+			return result.concat((Array.isArray(toFlatten) && (depth-1)) ? flat(toFlatten,depth-1) : toFlatten);
+		}, [])
+	}
+	return flat(d, Infinity).filter(v=>![",", "[", "]"].includes(v)) } 
 %}
 
 DATETIME -> DATE "T" TIME "Z" {% function(d) { return new Date(d.join("")) } %}
@@ -76,7 +94,6 @@ NUMERIC -> NUMBER DECIMAL_SEPARATOR NUMBER {% function(d) { return parseFloat(d.
 NUMBER -> [0-9]:+ {% function(d) { return d.join('').replace(/,/g,"") } %}
 
 DECIMAL_SEPARATOR -> "." 
-	| ","
 
 STRING -> [a-zA-Z@.\-:_0-9]:+ {% function(d) { return d[0].join("") } %}
 

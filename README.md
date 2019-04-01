@@ -39,13 +39,15 @@ The Values are parsed to their correspoding types.
 - foo:4 -----> { foo: 4 }
 - foo:eq:4 -----> { foo: { \$eq: 4 } }
 - foo:eq:3.4 -----> { foo: { \$eq: 3.4 } }
-- foo:eq:3,4 -----> { foo: { \$eq: 3.4 } }
-- foo:eq:2018-10-10T10:10:10 -----> { foo: { \$eq: new Date('2018-10-10T10:10:10') } }
-- foo:eq:2018-10-10 -----> { foo: { \$eq: new Date('2018-10-10') } }
+- foo:gte:2018-10-10T10:10:10 -----> { foo: { \$eq: new Date('2018-10-10T10:10:10') } }
+- foo:eq:2018-10-10 -----> { foo: { \$gte: new Date('2018-10-10') } }
 - foo:eq:true -----> { foo: { \$eq: true } }
 - foo:eq:false -----> { foo: { \$eq: false } }
 - foo:eq:"Foo Fighters is an awesome band" -----> { foo: { \$eq: "Foo Fighters is an awesome band" } }
 - foo:eq:5c9cac76536b87092f83f52f ----> { foo: { \$eq: new mongodb.ObjectId("5c9cac76536b87092f83f52f") } }
+- foo:eq:3,4 -----> { foo: { \$eq: [3,4] } }
+- foo:regex:fighters -----> { foo: { \$regex: /fighters/ } }
+- foo:iregex:fighters -----> { foo: { \$regex: /fighters/i } }
 
 **If the value does fit in any of the previous cases, it is parsed as a string**
 
@@ -53,12 +55,17 @@ The Values are parsed to their correspoding types.
 
 ### **Supported Operators**
 
-- gte
-- gt
-- lte
-- lt
 - eq
-- neq
+- ne
+- gte
+- lte
+- gt
+- lt
+- regex
+- iregex (case insensitive regex)
+- exists
+- in
+- nin
 
 **Examples:**
 

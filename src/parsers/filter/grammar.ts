@@ -27,7 +27,7 @@ export interface INearleyRule {
 
 export type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
 
-export let ILexer: ILexer | undefined;
+export let Lexer: ILexer | undefined;
 
 export let ParserRules: INearleyRule[] = [
   {
@@ -52,6 +52,11 @@ export let ParserRules: INearleyRule[] = [
     name: 'EXPRESSION',
     symbols: ['KEY', 'SEPARATOR', 'OPERATOR', 'SEPARATOR', 'VALUE'],
     postprocess(d) {
+      if (d[2] === '$regex') {
+        return { [d[0]]: { $regex: new RegExp(d[4]) } };
+      } else if (d[2] === '$iregex') {
+        return { [d[0]]: { $regex: new RegExp(d[4], 'i') } };
+      }
       return { [d[0]]: { [d[2]]: d[4] } };
     },
   },
@@ -97,11 +102,7 @@ export let ParserRules: INearleyRule[] = [
       return '$eq';
     },
   },
-  {
-    name: 'OPERATOR$string$2',
-    symbols: [{ literal: 'n' }, { literal: 'e' }, { literal: 'q' }],
-    postprocess: d => d.join(''),
-  },
+  { name: 'OPERATOR$string$2', symbols: [{ literal: 'n' }, { literal: 'e' }], postprocess: d => d.join('') },
   {
     name: 'OPERATOR',
     symbols: ['OPERATOR$string$2'],
@@ -147,6 +148,76 @@ export let ParserRules: INearleyRule[] = [
     symbols: ['OPERATOR$string$6'],
     postprocess() {
       return '$lt';
+    },
+  },
+  {
+    name: 'OPERATOR$string$7',
+    symbols: [{ literal: 'r' }, { literal: 'e' }, { literal: 'g' }, { literal: 'e' }, { literal: 'x' }],
+    postprocess: d => d.join(''),
+  },
+  {
+    name: 'OPERATOR',
+    symbols: ['OPERATOR$string$7'],
+    postprocess() {
+      return '$regex';
+    },
+  },
+  {
+    name: 'OPERATOR$string$8',
+    symbols: [
+      { literal: 'i' },
+      { literal: 'r' },
+      { literal: 'e' },
+      { literal: 'g' },
+      { literal: 'e' },
+      { literal: 'x' },
+    ],
+    postprocess: d => d.join(''),
+  },
+  {
+    name: 'OPERATOR',
+    symbols: ['OPERATOR$string$8'],
+    postprocess() {
+      return '$iregex';
+    },
+  },
+  {
+    name: 'OPERATOR$string$9',
+    symbols: [
+      { literal: 'e' },
+      { literal: 'x' },
+      { literal: 'i' },
+      { literal: 's' },
+      { literal: 't' },
+      { literal: 's' },
+    ],
+    postprocess: d => d.join(''),
+  },
+  {
+    name: 'OPERATOR',
+    symbols: ['OPERATOR$string$9'],
+    postprocess() {
+      return '$exists';
+    },
+  },
+  { name: 'OPERATOR$string$10', symbols: [{ literal: 'i' }, { literal: 'n' }], postprocess: d => d.join('') },
+  {
+    name: 'OPERATOR',
+    symbols: ['OPERATOR$string$10'],
+    postprocess() {
+      return '$in';
+    },
+  },
+  {
+    name: 'OPERATOR$string$11',
+    symbols: [{ literal: 'n' }, { literal: 'i' }, { literal: 'n' }],
+    postprocess: d => d.join(''),
+  },
+  {
+    name: 'OPERATOR',
+    symbols: ['OPERATOR$string$11'],
+    postprocess() {
+      return '$nin';
     },
   },
   { name: 'KEY$ebnf$1', symbols: [/[0-9a-zA-Z_$.]/] },
@@ -209,6 +280,26 @@ export let ParserRules: INearleyRule[] = [
         return reject;
       }
       return value;
+    },
+  },
+  { name: 'VALUE$ebnf$2$subexpression$1', symbols: [{ literal: ',' }, 'VALUE'] },
+  { name: 'VALUE$ebnf$2', symbols: ['VALUE$ebnf$2$subexpression$1'] },
+  { name: 'VALUE$ebnf$2$subexpression$2', symbols: [{ literal: ',' }, 'VALUE'] },
+  {
+    name: 'VALUE$ebnf$2',
+    symbols: ['VALUE$ebnf$2', 'VALUE$ebnf$2$subexpression$2'],
+    postprocess: d => d[0].concat([d[1]]),
+  },
+  {
+    name: 'VALUE',
+    symbols: [{ literal: '[' }, 'VALUE', 'VALUE$ebnf$2', { literal: ']' }],
+    postprocess(d) {
+      function flat(array, depth = 1) {
+        return array.reduce(function(result, toFlatten) {
+          return result.concat(Array.isArray(toFlatten) && depth - 1 ? flat(toFlatten, depth - 1) : toFlatten);
+        }, []);
+      }
+      return flat(d, Infinity).filter(v => ![',', '[', ']'].includes(v));
     },
   },
   {
@@ -410,7 +501,6 @@ export let ParserRules: INearleyRule[] = [
     },
   },
   { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: '.' }] },
-  { name: 'DECIMAL_SEPARATOR', symbols: [{ literal: ',' }] },
   { name: 'STRING$ebnf$1', symbols: [/[a-zA-Z@.\-:_0-9]/] },
   { name: 'STRING$ebnf$1', symbols: ['STRING$ebnf$1', /[a-zA-Z@.\-:_0-9]/], postprocess: d => d[0].concat([d[1]]) },
   {
