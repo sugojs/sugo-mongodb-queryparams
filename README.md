@@ -2,7 +2,7 @@
 
 Querystring parser that follows a simple ruleset to form querystrings and them builds the apropiate queries for mongodb databases.
 
-It uses [nearley](https://www.npmjs.com/package/nearley) package to create the neccesary grammars to parse. 
+It uses [nearley](https://www.npmjs.com/package/nearley) package to create the neccesary grammars to parse.
 
 [NearleyJS Website](https://nearley.js.org/docs/index)
 
@@ -36,6 +36,7 @@ npm install --save @sugo/mongodb-queryparams
 
 The Values are parsed to their correspoding types.
 
+- foo:4 -----> { foo: 4 }
 - foo:eq:4 -----> { foo: { \$eq: 4 } }
 - foo:eq:3.4 -----> { foo: { \$eq: 3.4 } }
 - foo:eq:3,4 -----> { foo: { \$eq: 3.4 } }
