@@ -321,6 +321,15 @@ describe('MongoDBQueryParams', () => {
       filter.number.$in.should.be.eql([3, 4]);
     });
 
+    it('should create an $in search with the ":in:" and an objectId list', async () => {
+      const { filter } = MongoDbQueryParams.parseQueryParams({
+        filter: 'ids:in:[5cc810bc4890f667b6a6db6b,5cc810bc4890f667b6a6db6d]',
+      });
+      filter.should.have.property('ids');
+      filter.ids.should.have.property('$in');
+      filter.ids.$in[0].toString().should.be.eql('5cc810bc4890f667b6a6db6b');
+    });
+
     it('should create an $nin search with the ":nin:" and a value', async () => {
       const { filter } = MongoDbQueryParams.parseQueryParams({
         filter: 'number:nin:[3,4]',

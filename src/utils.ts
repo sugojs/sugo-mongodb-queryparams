@@ -57,21 +57,24 @@ export const objectToDotNotation = (obj: object, current: string, res = {}) => {
   return res;
 };
 
-export const parseObjectIds = (doc: any) => {
-  if (typeof doc !== 'object' && !Array.isArray(doc)) {
-    return doc;
+export const parseObjectIds = (input: any) => {
+  if (typeof input === 'string' && ObjectId.isValid(input)) {
+    return new ObjectId(input);
   }
-  for (const key in doc) {
-    if (doc.hasOwnProperty(key)) {
-      const value = doc[key];
+  if (typeof input !== 'object' && !Array.isArray(input)) {
+    return input;
+  }
+  for (const key in input) {
+    if (input.hasOwnProperty(key)) {
+      const value = input[key];
       if (typeof value === 'string' && ObjectId.isValid(value)) {
-        doc[key] = new ObjectId(value);
+        input[key] = new ObjectId(value);
       } else if (Array.isArray(value)) {
-        doc[key] = value.map(v => parseObjectIds(v));
+        input[key] = value.map(v => parseObjectIds(v));
       } else if (typeof value === 'object') {
-        doc[key] = parseObjectIds(value);
+        input[key] = parseObjectIds(value);
       }
     }
   }
-  return doc;
+  return input;
 };
