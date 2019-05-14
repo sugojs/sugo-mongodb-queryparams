@@ -33,7 +33,22 @@ KEY -> [0-9a-zA-Z_$.]:+ {% function(d) {return d[0].join("")} %}
 VALUE -> DATETIME {% function(d) { return d[0] } %}
 	| NUMERIC {% function(d) { return d[0] } %}
 	| BOOLEAN {% function(d) { return d[0] } %}
-	| QUOTE .:+ QUOTE {% function(d) { return d[1].join("") } %}
+	| QUOTE .:+ QUOTE {% function(d, p, reject) { 
+		const [firstQuote, text, lastQuote] = d;
+		if (firstQuote !== '"' && firstQuote !== "'"){
+			return reject
+		}
+		if (lastQuote !== '"' && lastQuote !== "'"){
+			return reject
+		}
+		if (firstQuote !== lastQuote){
+			return reject
+		}
+		if (text.includes(firstQuote)){
+			return reject
+		}
+		return text.join("")
+} %}
 	| STRING {% function(d, p, reject) { 
 		const value = d[0]
 		if (value === "true") return reject
@@ -104,8 +119,8 @@ TRUE -> "true"
 
 FALSE -> "false"
 
-QUOTE -> "'"
-	| "\""
+QUOTE -> "'" {% function(d, p, reject) { return d[0] } %}
+	| "\"" {% function(d, p, reject) { return d[0] } %}
 
 _ -> " ":+
 

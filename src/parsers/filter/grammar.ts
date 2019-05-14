@@ -6,20 +6,20 @@ function id(d: any[]): any {
   return d[0];
 }
 
-export interface IToken {
+export interface Token {
   value: any;
   [key: string]: any;
 }
 
-export interface ILexer {
+export interface Lexer {
   reset: (chunk: string, info: any) => void;
-  next: () => IToken | undefined;
+  next: () => Token | undefined;
   save: () => any;
-  formatError: (token: IToken) => string;
+  formatError: (token: Token) => string;
   has: (tokenType: string) => boolean;
 }
 
-export interface INearleyRule {
+export interface NearleyRule {
   name: string;
   symbols: NearleySymbol[];
   postprocess?: (d: any[], loc?: number, reject?: {}) => any;
@@ -27,9 +27,9 @@ export interface INearleyRule {
 
 export type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
 
-export let ILexer: ILexer | undefined;
+export let Lexer: Lexer | undefined;
 
-export let ParserRules: INearleyRule[] = [
+export let ParserRules: NearleyRule[] = [
   {
     name: 'EXPRESSION',
     symbols: ['EXPRESSION', '_', 'CONNECTOR', '_', 'EXPRESSION'],
@@ -255,8 +255,21 @@ export let ParserRules: INearleyRule[] = [
   {
     name: 'VALUE',
     symbols: ['QUOTE', 'VALUE$ebnf$1', 'QUOTE'],
-    postprocess(d) {
-      return d[1].join('');
+    postprocess(d, p, reject) {
+      const [firstQuote, text, lastQuote] = d;
+      if (firstQuote !== '"' && firstQuote !== "'") {
+        return reject;
+      }
+      if (lastQuote !== '"' && lastQuote !== "'") {
+        return reject;
+      }
+      if (firstQuote !== lastQuote) {
+        return reject;
+      }
+      if (text.includes(firstQuote)) {
+        return reject;
+      }
+      return text.join('');
     },
   },
   {
@@ -536,8 +549,20 @@ export let ParserRules: INearleyRule[] = [
     postprocess: d => d.join(''),
   },
   { name: 'FALSE', symbols: ['FALSE$string$1'] },
-  { name: 'QUOTE', symbols: [{ literal: "'" }] },
-  { name: 'QUOTE', symbols: [{ literal: '"' }] },
+  {
+    name: 'QUOTE',
+    symbols: [{ literal: "'" }],
+    postprocess(d, p, reject) {
+      return d[0];
+    },
+  },
+  {
+    name: 'QUOTE',
+    symbols: [{ literal: '"' }],
+    postprocess(d, p, reject) {
+      return d[0];
+    },
+  },
   { name: '_$ebnf$1', symbols: [{ literal: ' ' }] },
   { name: '_$ebnf$1', symbols: ['_$ebnf$1', { literal: ' ' }], postprocess: d => d[0].concat([d[1]]) },
   { name: '_', symbols: ['_$ebnf$1'] },
