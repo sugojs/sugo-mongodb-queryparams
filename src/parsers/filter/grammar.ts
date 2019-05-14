@@ -6,20 +6,20 @@ function id(d: any[]): any {
   return d[0];
 }
 
-export interface Token {
+export interface IToken {
   value: any;
   [key: string]: any;
 }
 
-export interface Lexer {
+export interface ILexer {
   reset: (chunk: string, info: any) => void;
-  next: () => Token | undefined;
+  next: () => IToken | undefined;
   save: () => any;
-  formatError: (token: Token) => string;
+  formatError: (token: IToken) => string;
   has: (tokenType: string) => boolean;
 }
 
-export interface NearleyRule {
+export interface INearleyRule {
   name: string;
   symbols: NearleySymbol[];
   postprocess?: (d: any[], loc?: number, reject?: {}) => any;
@@ -27,9 +27,9 @@ export interface NearleyRule {
 
 export type NearleySymbol = string | { literal: any } | { test: (token: any) => boolean };
 
-export let Lexer: Lexer | undefined;
+export let ILexer: ILexer | undefined;
 
-export let ParserRules: NearleyRule[] = [
+export let ParserRules: INearleyRule[] = [
   {
     name: 'EXPRESSION',
     symbols: ['EXPRESSION', '_', 'CONNECTOR', '_', 'EXPRESSION'],
