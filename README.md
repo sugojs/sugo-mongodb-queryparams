@@ -40,7 +40,7 @@ The Values are parsed to their correspoding types.
 - foo:eq:4 -----> { foo: { \$eq: 4 } }
 - foo:eq:3.4 -----> { foo: { \$eq: 3.4 } }
 - foo:gte:2018-10-10T10:10:10 -----> { foo: { \$eq: new Date('2018-10-10T10:10:10') } }
-- foo:eq:2018-10-10 -----> { foo: { \$gte: new Date('2018-10-10') } }
+- foo:eq:2018-10-10 -----> { foo: { \$eq: new Date('2018-10-10') } }
 - foo:eq:true -----> { foo: { \$eq: true } }
 - foo:eq:false -----> { foo: { \$eq: false } }
 - foo:eq:"Foo Fighters is an awesome band" -----> { foo: { \$eq: "Foo Fighters is an awesome band" } }
@@ -75,7 +75,7 @@ The Values are parsed to their correspoding types.
 ## **Example**
 
 ```typescript
-import MongoDbQueryParams from 'mongodb-queryparams';
+import MongoDbQueryParams from '@sugo/mongodb-queryparams';
 const { filter, sort, limit, select, skip } = MongoDbQueryParams.parseQueryParams({
   filter: 'email:eq:hola AND number:eq:4',
   sort: 'name:asc email:desc',
