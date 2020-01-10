@@ -2,7 +2,7 @@ const OPERATORS = ['$and', '$or'];
 import { ObjectId } from 'mongodb';
 
 export const isObject = (item: any) =>
-  item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date);
+  item && typeof item === 'object' && !Array.isArray(item) && !(item instanceof Date) && !(item instanceof RegExp);
 
 export const mergeDeep = (target: object, ...sources: object[]) => {
   if (!sources.length) {
@@ -71,7 +71,7 @@ export const parseObjectIds = (input: any) => {
         input[key] = new ObjectId(value);
       } else if (Array.isArray(value)) {
         input[key] = value.map(v => parseObjectIds(v));
-      } else if (typeof value === 'object') {
+      } else if (typeof value === 'object' && !(value instanceof RegExp)) {
         input[key] = parseObjectIds(value);
       }
     }

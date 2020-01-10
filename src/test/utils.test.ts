@@ -37,6 +37,25 @@ describe('Clean Query methods', () => {
       result.dates.wedding.should.be.instanceof(Date);
       result.dates.promotion.should.be.instanceof(Date);
     });
+
+    it('It should merge objects with 2 levels of recursion filled with RegExp', async () => {
+      const result = mergeDeep(
+        { birthdate: new RegExp('foo'), dates: { promotion: new RegExp('fighters') } },
+        {
+          birthdate: new RegExp('all'),
+          dates: { wedding: new RegExp('time') },
+          deathday: new RegExp('low'),
+        },
+      );
+      result.should.have.property('birthdate');
+      result.should.have.property('dates');
+      result.should.have.property('deathday');
+
+      result.birthdate.should.be.instanceof(RegExp);
+      result.deathday.should.be.instanceof(RegExp);
+      result.dates.wedding.should.be.instanceof(RegExp);
+      result.dates.promotion.should.be.instanceof(RegExp);
+    });
   });
 
   describe('cleanQuery', () => {
